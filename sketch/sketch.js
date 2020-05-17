@@ -22,6 +22,15 @@ let sounds = {
   'drone': undefined
 }
 let drone;
+let drone_loc = {
+  x: 0,
+  y: 0,
+  z: 0,
+  altitude: 0,  // range: 0 to 1000?
+  rotX: 0,
+  rotY: 0,
+  rotZ: 0
+}
 //let keymap;
 
 let font_georgia;
@@ -93,6 +102,7 @@ function draw() {
 
   // drawSpace();
   drone.display();
+  handlePropeller();
 
   /*if (!sounds.bgm.isPlaying()) {
     getAudioContext().resume();
