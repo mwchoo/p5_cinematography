@@ -20,6 +20,8 @@ ARROW_RIGHT Key: move the camera to the right
 W Key: Take-off
 S Key: Landing
 
+Mouse Click: switch pov mode
+
 P Key: screen shot
 ```
 
