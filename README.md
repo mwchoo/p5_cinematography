@@ -17,6 +17,9 @@ ARROW_DOWN Key: go backward
 ARROW_LEFT Key: move the camera to the left
 ARROW_RIGHT Key: move the camera to the right
 
+W Key: Take-off
+S Key: Landing
+
 P Key: screen shot
 ```
 
