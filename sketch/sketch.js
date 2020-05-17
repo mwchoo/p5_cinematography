@@ -11,6 +11,8 @@ ARROW_RIGHT Key: rotate right
 W Key: Up
 S Key: Down
 
+Mouse Click: switch pov mode
+
 P Key: screen shot
 */
 
@@ -43,7 +45,7 @@ let isPlayed = false;
 function preload() {
   font_georgia = loadFont('assets/georgia.ttf');
   // sounds.bgm = loadSound('assets/bgm.mp3');
-  // sounds.walk = loadSound('assets/drone.mp3');
+  // sounds.drone = loadSound('assets/drone.mp3');
   // keymap = loadImage('assets/keymap.png');
 }
 
@@ -55,7 +57,7 @@ function setup() {
   gl.disable(gl.DEPTH_TEST);*/
 
   cgSplashName = new Text("Drone CAM", 100, -300, 0, 0, color(255, 255, 255, 1), font_georgia);
-  drone = new Drone(4, color(18, 15, 11));
+  drone = new Drone(1);
   //scene_timer = new Timer(3000, handleScene);
 
   spotPos = new p5.Vector(-1000, 2000, 200);
@@ -71,15 +73,14 @@ function draw() {
 
   // scene control
   if (scene === 0) {
-    drawSplash();
-    return;
+    // drawSplash();
+    // return;
   }
 
   // light setting
   lights();
-  if (!sounds.bgm.isPlaying()) {  // TURN OFF WHEN THE SHOW IS BEGINNING
-    pointLight(100, 100, 100, sin(srot) * 4000, -1300, cos(srot) * 100 - 100);
-  }
+  pointLight(100, 100, 100, sin(srot) * 4000, -1300, cos(srot) * 100 - 100);
+
 
   srot += 0.01;
   spotPos.x = 200 * cos(srot);
@@ -90,12 +91,13 @@ function draw() {
   // camera setting
   camera(X, Y, Z, centerX, centerY, centerZ, 0, 1, 0);
 
-  drawSpace();
+  // drawSpace();
+  drone.display();
 
-  if (!sounds.bgm.isPlaying()) {
+  /*if (!sounds.bgm.isPlaying()) {
     getAudioContext().resume();
     sounds.bgm.play();
-  }
+  }*/
 
   handleKeyDown();
 }
@@ -121,9 +123,9 @@ function handleKeyDown() {
 
 function keyPressed() {
   if (keyCode === UP_ARROW || keyCode === DOWN_ARROW || keyCode === LEFT_ARROW || keyCode === RIGHT_ARROW) {
-    if (!sounds.walk.isPlaying()) {
+    /*if (!sounds.walk.isPlaying()) {
       sounds.walk.play();
-    }
+    }*/
   }
   if (keyCode === 80) {
     saveImage();
@@ -132,9 +134,9 @@ function keyPressed() {
 
 function keyReleased() {
   if (keyCode === UP_ARROW || keyCode === DOWN_ARROW || keyCode === LEFT_ARROW || keyCode === RIGHT_ARROW) {
-    if (sounds.walk.isPlaying()) {
+    /*if (sounds.walk.isPlaying()) {
       sounds.walk.stop();
-    }
+    }*/
   }
 }
 
