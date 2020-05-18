@@ -56,9 +56,8 @@ document.onselectstart = function () {
 
 function preload() {
   font_georgia = loadFont('assets/georgia.ttf');
-  // sounds.bgm = loadSound('assets/bgm.mp3');
-  // sounds.drone = loadSound('assets/drone.mp3');
-  // keymap = loadImage('assets/keymap.png');
+  sounds.bgm = loadSound('assets/bgm.mp3');
+  sounds.drone = loadSound('assets/drone.mp3');
 }
 
 function setup() {
@@ -77,9 +76,8 @@ function setup() {
   mrot = 0;
   srot = 0;
 
-  //initCity();
   initBuildings();
-  //sounds.bgm.play();
+  sounds.bgm.play();
   createDiv("<div class='info-wrapper'>" +
     "<h2 id='pov-info'>Default POV (CAM 0)</h2>" +
     "<h3 id='drone-pos'>Drone POS: (0, 0, 0)</h3>" +
@@ -119,16 +117,16 @@ function draw() {
   //drawCity();
   drawBuildings();
   drone.display();
-  handlePropeller();
 
-  /*if (!sounds.bgm.isPlaying()) {
+  if (!sounds.bgm.isPlaying()) {
     getAudioContext().resume();
     sounds.bgm.play();
-  }*/
+  }
 
   handleDisplay();
   handleKeyDown();
   handlePov();
+  handleDroneSound();
 }
 
 function handlePov() {

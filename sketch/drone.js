@@ -193,6 +193,15 @@ class Propeller {
   }
 }
 
-function handlePropeller() {
-  // ToDo. check propeller turn on
+function handleDroneSound() {
+  const {propeller} = drone;
+  const {front_left} = propeller;
+  if (front_left.rot_speed > 0.1) {
+    if (!sounds.drone.isPlaying()) {
+      getAudioContext().resume();
+      sounds.drone.play();
+    }
+  } else {
+    sounds.drone.stop();
+  }
 }
