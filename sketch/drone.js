@@ -93,6 +93,7 @@ class Drone {
 
   display() {
     push();
+    translate(0, -50, 0);
     noStroke();
     specularMaterial(200, 200, 200);
     shininess(20);
@@ -116,18 +117,29 @@ class Drone {
 class Propeller {
   constructor() {
     this.rot = 0;
-    this.rot_speed = {  // range: 0 to 255 (simulate PWM)
-      front_left: 0,
-      front_right: 0,
-      rear_left: 0,
-      rear_right: 0
+    this.rot_speed = 0;  // range: 0 to 255 (simulate PWM)
+  }
+
+  setSpeedUp(val) {
+    if (this.rot_speed < 1) {
+      this.rot_speed += val;
+    }
+  }
+
+  setSpeedDown(val) {
+    if (this.rot_speed > 0) {
+      this.rot_speed -= val;
+    }
+    if (this.rot_speed < 0) {
+      this.rot_speed = 0;  // exception handling
     }
   }
 
   display() {
     push();
     translate(0, -4, 0);
-    rotateY(mouseX / 10);
+    this.rot += this.rot_speed;
+    rotateY(this.rot);
     specularMaterial(20, 20, 20);
     shininess(20);
     cylinder(7, 4);
