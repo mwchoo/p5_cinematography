@@ -12,8 +12,11 @@ body {
 
 .info-wrapper h2 {
     font-size: 25px;
+    background: dodgerblue;
+    padding-left: 8px;
 }
 
 .info-wrapper h3 {
     font-size: 13px;
+    padding-left: 8px;
 }
