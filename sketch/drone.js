@@ -2,24 +2,15 @@ class Drone {
   constructor(sz) {
     this.size = sz;
     this.on = false;
-    this.x = 0; //
-    this.y = 0; //
-    this.z = 0; //
-    this.altitude = 0;  // range: 0 to 1000?
-    this.rotX = 0; //
-    this.rotY = 0; //
-    this.rotZ = 0; //
+    this.x = 0;
+    this.y = 0;
+    this.z = 0;
     this.propeller = {
       front_left: new Propeller(),
       front_right: new Propeller(),
       rear_left: new Propeller(),
       rear_right: new Propeller()
     }
-  }
-
-  handleRotate() {
-    // ToDo. rotate drone using prop val
-    // fl-fr or fl-rl diff!
   }
 
   handleAltitude() {
@@ -51,10 +42,6 @@ class Drone {
       valInRange(0.55, 1, rear_right.rot_speed)) {
       // take off
       this.y -= front_left.rot_speed ^ 2;
-    }
-
-    if (this.altitude < 1000) {
-
     }
   }
 

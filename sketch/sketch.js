@@ -3,15 +3,21 @@
 20141150 Minwoo Choo
 
 < MANUAL >
-ARROW_UP Key: go forward
-ARROW_DOWN Key: go backward
-ARROW_LEFT Key: rotate left
-ARROW_RIGHT Key: rotate right
+W Key: go forward (CAM)
+S Key: go backward (CAM)
+A Key: rotate left (CAM)
+D Key: rotate right (CAM)
 
-W Key: Up
-S Key: Down
+ARROW_UP Key: go forward (DRONE)
+ARROW_DOWN Key: go backward (DRONE)
+ARROW_LEFT Key: go left (DRONE)
+ARROW_RIGHT Key: go right (DRONE)
+
+R Key: take off (DRONE)
+F Key: landing (DRONE)
 
 Mouse Click: switch pov mode
+Mouse Move: cam angle (in drone pov)
 
 P Key: screen shot
 */
@@ -23,15 +29,6 @@ let sounds = {
   'drone': undefined
 }
 let drone;
-let drone_loc = {
-  x: 0,
-  y: 0,
-  z: 0,
-  altitude: 0,  // range: 0 to 1000?
-  rotX: 0,
-  rotY: 0,
-  rotZ: 0
-}
 //let keymap;
 
 let font_georgia;
@@ -52,7 +49,7 @@ let spotPos, spotDir, modelPos;
 let mrot, srot;
 let isPlayed = false;
 
-document.onselectstart = function() {
+document.onselectstart = function () {
   // prevent mouse drag or text/element selection
   window.getSelection().removeAllRanges();
 };
@@ -91,6 +88,9 @@ function setup() {
     "<h3 id='cam-pos'>CAM POS: (0, 0, 0), (0, 0, 0)</h3>" +
     "</div>"
   );
+  createDiv("<div class='keymap-wrapper'>" +
+    "<img src='assets/keymap.png'>" +
+    "</div>");
 }
 
 function draw() {
@@ -128,19 +128,25 @@ function draw() {
 
   handleDisplay();
   handleKeyDown();
+  handlePov();
 }
 
 function handlePov() {
   if (pov_mode === 0) {
-    X = -160;
+    /*X = -160;
     Y = -160;
     Z = 550;
     centerX = 0;
     centerY = -100;
-    centerZ = 0;
+    centerZ = 0;*/
   } else if (pov_mode === 1) {
     // drone mode
-
+    X = drone.x;
+    Y = drone.y + 100;
+    Z = drone.z + 200;
+    centerX = mouseX + 500;
+    centerY = mouseY - drone.y;
+    console.log(centerY);
   }
 }
 
@@ -158,40 +164,75 @@ function handleDisplay() {
     + front_right.rot_speed.toFixed(3) + ', ' + rear_left.rot_speed.toFixed(3) + ', '
     + rear_right.rot_speed.toFixed(3) + ')';
   altitude.innerText = 'Altitude: ' + parseInt(y) * -1 + ' ft';
-  cam_pos.innerText = 'CAM POS: ' + parseInt(X) + ', ' + parseInt(Y) + ', ' + parseInt(Z) + ')'
-    + '(' + parseInt(centerX) + ', ' + parseInt(centerY) + ', ' + parseInt(centerZ) + ')';
+  cam_pos.innerText = 'CAM POS: (' + parseInt(X) + ', ' + parseInt(Y) + ', ' + parseInt(Z) + ')'
+    + ' (' + parseInt(centerX) + ', ' + parseInt(centerY) + ', ' + parseInt(centerZ) + ')';
 }
 
 function handleKeyDown() {
   // handle rot speed of propeller to control altitude
-  const {front_left, front_right, rear_left, rear_right} = drone.propeller;
-  if (keyIsDown(87)) {  // W key - take off
+  const {y, propeller} = drone
+  const {front_left, front_right, rear_left, rear_right} = propeller;
+  if (keyIsDown(82)) {  // R key - take off
     front_left.setSpeedUp(0.005);
     front_right.setSpeedUp(0.005);
     rear_left.setSpeedUp(0.005);
     rear_right.setSpeedUp(0.005);
-  } else if (keyIsDown(83)) {  // S key - landing
+  } else if (keyIsDown(70)) {  // F key - landing
     front_left.setSpeedDown(0.005);
     front_right.setSpeedDown(0.005);
     rear_left.setSpeedDown(0.005);
     rear_right.setSpeedDown(0.005);
   }
 
-  if (keyIsDown(UP_ARROW)) {
-    // go forward
+
+  if (keyIsDown(87)) {
+    // W: go forward
     Z -= 10;
     Y = cos(Z / 50) * 60 - 100;  // walk effect
-  } else if (keyIsDown(DOWN_ARROW)) {
-    // go backward
+    centerX = 0;
+    centerY = -100;
+    centerZ = 0;
+  } else if (keyIsDown(83)) {
+    // S: go backward
     Z += 10;
     Y = cos(Z / 50) * 60 - 100;  // walk effect
+    centerX = 0;
+    centerY = -100;
+    centerZ = 0;
   }
-  if (keyIsDown(LEFT_ARROW)) {
-    // turn your head to the left
+  if (keyIsDown(65)) {
+    // A: turn your head to the left
     X -= 20;
-  } else if (keyIsDown(RIGHT_ARROW)) {
-    // turn your head to the right
+    centerX = 0;
+    centerY = -100;
+    centerZ = 0;
+  } else if (keyIsDown(68)) {
+    // D: turn your head to the right
     X += 20;
+    centerX = 0;
+    centerY = -100;
+    centerZ = 0;
+  }
+
+  if (y < 0) {  // altitude > 0
+    if (keyIsDown(UP_ARROW)) {
+      // go forward
+      //drone.z -= 5;
+      drone.x += 5;
+    } else if (keyIsDown(DOWN_ARROW)) {
+      // go backward
+      //drone.z += 5;
+      drone.x -= 5;
+    }
+    if (keyIsDown(LEFT_ARROW)) {
+      // go left
+      //drone.x -= 5;
+      drone.z -= 5;
+    } else if (keyIsDown(RIGHT_ARROW)) {
+      // go right
+      //drone.x += 5;
+      drone.z += 5;
+    }
   }
 }
 

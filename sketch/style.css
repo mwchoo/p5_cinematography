@@ -20,3 +20,14 @@ body {
     font-size: 13px;
     padding-left: 8px;
 }
+
+.keymap-wrapper {
+    position: fixed;
+    top: 200px;
+    margin-top: 50px;
+    margin-left: 15px;
+}
+
+.keymap-wrapper img {
+    width: 300px;
+}
