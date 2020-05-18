@@ -48,3 +48,7 @@ class Timer {  // implemented by Minwoo Choo
     }
   }
 }
+
+function valInRange(min, max, val) {
+  return val >= min && val <= max;
+}
