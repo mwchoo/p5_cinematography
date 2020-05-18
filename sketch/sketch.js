@@ -17,6 +17,7 @@ P Key: screen shot
 */
 
 let scene = 0;
+let pov_mode = 0;
 let sounds = {
   'bgm': undefined,
   'drone': undefined
@@ -39,11 +40,11 @@ let cgSplashName;
 //let scene_timer;
 let rot = 0;
 
-let X = 0;
-let Y = 0;
-let Z = 1700;
+let X = -160;  // 0;
+let Y = -160;  // 0;
+let Z = 550;  //1700;
 let centerX = 0;
-let centerY = 0;
+let centerY = -100;
 let centerZ = 0;
 let h = 20;
 
@@ -65,7 +66,7 @@ function setup() {
   gl = this._renderer.GL;
   gl.disable(gl.DEPTH_TEST);*/
 
-  cgSplashName = new Text("Drone CAM", 100, -300, 0, 0, color(255, 255, 255, 1), font_georgia);
+  cgSplashName = new Text('Drone CAM', 100, -300, 0, 0, color(255, 255, 255, 1), font_georgia);
   drone = new Drone(1);
   //scene_timer = new Timer(3000, handleScene);
 
@@ -74,7 +75,17 @@ function setup() {
   mrot = 0;
   srot = 0;
 
+  //initCity();
+  initBuildings();
   //sounds.bgm.play();
+  createDiv("<div class='info-wrapper'>" +
+    "<h2 id='pov-info'>Default POV (CAM 0)</h2>" +
+    "<h3 id='drone-pos'>Drone POS: (0, 0, 0)</h3>" +
+    "<h3 id='drone-speed'>Propeller Speed: (0, 0, 0, 0)</h3>" +
+    "<h3 id='altitude'>Altitude: 0 ft</h3>" +
+    "<h3 id='cam-pos'>CAM POS: (0, 0, 0), (0, 0, 0)</h3>" +
+    "</div>"
+  );
 }
 
 function draw() {
@@ -100,7 +111,8 @@ function draw() {
   // camera setting
   camera(X, Y, Z, centerX, centerY, centerZ, 0, 1, 0);
 
-  // drawSpace();
+  //drawCity();
+  drawBuildings();
   drone.display();
   handlePropeller();
 
@@ -109,10 +121,57 @@ function draw() {
     sounds.bgm.play();
   }*/
 
+  handleDisplay();
   handleKeyDown();
 }
 
+function handlePov() {
+  if (pov_mode === 0) {
+    X = -160;
+    Y = -160;
+    Z = 550;
+    centerX = 0;
+    centerY = -100;
+    centerZ = 0;
+  } else if (pov_mode === 1) {
+    // drone mode
+
+  }
+}
+
+function handleDisplay() {
+  const pov_info = document.getElementById('pov-info');
+  const drone_pos = document.getElementById('drone-pos');
+  const drone_speed = document.getElementById('drone-speed');
+  const altitude = document.getElementById('altitude');
+  const cam_pos = document.getElementById('cam-pos');
+  const {x, y, z} = drone;
+  const {front_left, front_right, rear_left, rear_right} = drone.propeller;
+  pov_info.innerText = pov_mode === 0 ? 'Default POV (CAM 0)' : 'Drone POV (CAM 1)';
+  drone_pos.innerText = 'Drone Pos: (' + parseInt(x) + ', ' + parseInt(y) + ', ' + parseInt(z) + ')';
+  drone_speed.innerText = 'Propeller Speed: ' + front_left.rot_speed.toFixed(3) + ', '
+    + front_right.rot_speed.toFixed(3) + ', ' + rear_left.rot_speed.toFixed(3) + ', '
+    + rear_right.rot_speed.toFixed(3) + ')';
+  altitude.innerText = 'Altitude: ' + parseInt(y) * -1 + ' ft';
+  cam_pos.innerText = 'CAM POS: ' + parseInt(X) + ', ' + parseInt(Y) + ', ' + parseInt(Z) + ')'
+    + '(' + parseInt(centerX) + ', ' + parseInt(centerY) + ', ' + parseInt(centerZ) + ')';
+}
+
 function handleKeyDown() {
+  // handle rot speed of propeller to control altitude
+  const {front_left, front_right, rear_left, rear_right} = drone.propeller;
+  if (keyIsDown(87)) {  // W key - take off
+    front_left.setSpeedUp(0.005);
+    front_right.setSpeedUp(0.005);
+    rear_left.setSpeedUp(0.005);
+    rear_right.setSpeedUp(0.005);
+  } else if (keyIsDown(83)) {  // S key - landing
+    front_left.setSpeedDown(0.005);
+    front_right.setSpeedDown(0.005);
+    rear_left.setSpeedDown(0.005);
+    rear_right.setSpeedDown(0.005);
+  }
+
   if (keyIsDown(UP_ARROW)) {
     // go forward
     Z -= 10;
@@ -143,6 +202,7 @@ function keyPressed() {
 }
 
 function keyReleased() {
+  drone_acc = 0;
   if (keyCode === UP_ARROW || keyCode === DOWN_ARROW || keyCode === LEFT_ARROW || keyCode === RIGHT_ARROW) {
     /*if (sounds.walk.isPlaying()) {
       sounds.walk.stop();

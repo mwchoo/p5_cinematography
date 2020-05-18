@@ -17,6 +17,47 @@ class Drone {
     }
   }
 
+  handleRotate() {
+    // ToDo. rotate drone using prop val
+    // fl-fr or fl-rl diff!
+  }
+
+  handleAltitude() {
+    /*
+    0.0 ~ 0.45: landing
+    0.45 ~ 0.55: stable
+    0.55 ~ 1.0: take off
+     */
+    const {front_left, front_right, rear_left, rear_right} = this.propeller;
+    if (valInRange(0.0, 0.1, front_left.rot_speed) &&
+      valInRange(0.0, 0.1, front_right.rot_speed) &&
+      valInRange(0.0, 0.1, rear_left.rot_speed) &&
+      valInRange(0.0, 0.1, rear_right.rot_speed)) {
+      // landing -1
+      if (this.y < 0) {
+        this.y += 10;
+      }
+    } else if (valInRange(0.1, 0.45, front_left.rot_speed) &&
+      valInRange(0.1, 0.45, front_right.rot_speed) &&
+      valInRange(0.1, 0.45, rear_left.rot_speed) &&
+      valInRange(0.1, 0.45, rear_right.rot_speed)) {
+      // landing -2
+      if (this.y < 0) {
+        this.y += (1 - front_left.rot_speed) ^ 2;
+      }
+    } else if (valInRange(0.55, 1, front_left.rot_speed) &&
+      valInRange(0.55, 1, front_right.rot_speed) &&
+      valInRange(0.55, 1, rear_left.rot_speed) &&
+      valInRange(0.55, 1, rear_right.rot_speed)) {
+      // take off
+      this.y -= front_left.rot_speed ^ 2;
+    }
+
+    if (this.altitude < 1000) {
+
+    }
+  }
+
   drawArms() {
     // draw front-left arm
     push();
@@ -93,7 +134,8 @@ class Drone {
 
   display() {
     push();
-    translate(0, -50, 0);
+    this.handleAltitude();
+    translate(this.x, this.y - 50, this.z);
     noStroke();
     specularMaterial(200, 200, 200);
     shininess(20);
@@ -117,12 +159,15 @@ class Drone {
 class Propeller {
   constructor() {
     this.rot = 0;
-    this.rot_speed = 0;  // range: 0 to 255 (simulate PWM)
+    this.rot_speed = 0;  // range: 0 to 1 (simulate PWM)
   }
 
   setSpeedUp(val) {
     if (this.rot_speed < 1) {
       this.rot_speed += val;
+    }
+    if (this.rot_speed > 1) {
+      this.rot_speed = 1;  // exception handling
     }
   }
 
