@@ -52,6 +52,11 @@ let spotPos, spotDir, modelPos;
 let mrot, srot;
 let isPlayed = false;
 
+document.onselectstart = function() {
+  // prevent mouse drag or text/element selection
+  window.getSelection().removeAllRanges();
+};
+
 function preload() {
   font_georgia = loadFont('assets/georgia.ttf');
   // sounds.bgm = loadSound('assets/bgm.mp3');
@@ -207,6 +212,15 @@ function keyReleased() {
     /*if (sounds.walk.isPlaying()) {
       sounds.walk.stop();
     }*/
+  }
+}
+
+function mouseClicked() {
+  // mouse click event to control pov mode
+  if (pov_mode !== 1) {
+    pov_mode++;
+  } else {
+    pov_mode = 0;
   }
 }
 
