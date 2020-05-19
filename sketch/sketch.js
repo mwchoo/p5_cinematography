@@ -77,6 +77,7 @@ function setup() {
   srot = 0;
 
   initBuildings();
+  getAudioContext().resume();
   sounds.bgm.play();
   createDiv("<div class='info-wrapper'>" +
     "<h2 id='pov-info'>Default POV (CAM 0)</h2>" +
