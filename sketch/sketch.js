@@ -144,7 +144,6 @@ function handlePov() {
     Z = drone.z + 200;
     centerX = mouseX + 500;
     centerY = mouseY - drone.y;
-    console.log(centerY);
   }
 }
 
